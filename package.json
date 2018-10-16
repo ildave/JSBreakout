@@ -1,7 +1,7 @@
 {
-  "name": "parcel-sandbox",
+  "name": "JSBreakout",
   "version": "1.0.0",
-  "description": "Simple Parcel Sandbox",
+  "description": "JSBreakout",
   "main": "index.html",
   "scripts": {
     "start": "parcel index.html --open",
