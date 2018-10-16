@@ -10,11 +10,34 @@ class Paddle {
     this.x = 800 / 2 - this.width / 2;
     this.y = 600 - this.height * 2;
     this.speed = 10;
+    this.currentSpeed = 0;
+  }
+
+  update() {
+    this.x += this.currentSpeed;
+    if (this.x < 0) {
+      this.x = 0;
+    }
+    if (this.x + this.width > 800) {
+      this.x = 800 - this.width;
+    }
   }
 
   draw() {
     this.ctx.fillStyle = this.color;
     this.ctx.fillRect(this.x, this.y, this.width, this.height);
+  }
+
+  moveLeft() {
+    this.currentSpeed = -this.speed;
+  }
+
+  moveRight() {
+    this.currentSpeed = this.speed;
+  }
+
+  stop() {
+    this.currentSpeed = 0;
   }
 }
 
@@ -65,10 +88,23 @@ class Ball {
 
 document.addEventListener("keydown", function(e) {
   if (e.keyCode === 37) {
-    paddle.x += -paddle.speed;
+    paddle.moveLeft();
   }
   if (e.keyCode === 39) {
-    paddle.x += paddle.speed;
+    paddle.moveRight();
+  }
+});
+
+document.addEventListener("keyup", function(e) {
+  if (e.keyCode === 37) {
+    if (paddle.currentSpeed < 0) {
+      paddle.stop();
+    }
+  }
+  if (e.keyCode === 39) {
+    if (paddle.currentSpeed > 0) {
+      paddle.stop();
+    }
   }
 });
 
@@ -81,9 +117,10 @@ function gameLoop(t) {
   if (!current) current = t;
   let dt = t - current;
   current = t;
+  paddle.update();
   paddle.draw();
-  ball.draw();
   ball.update();
+  ball.draw();
   requestAnimationFrame(gameLoop);
 }
 
