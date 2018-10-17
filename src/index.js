@@ -64,17 +64,25 @@ class Ball {
     this.x += this.speedX;
     this.y += this.speedY;
   }
+
+  reset() {
+    this.speedX = 2;
+    this.speedY = -3;
+    this.x = 400;
+    this.y = 300;
+  }
 }
 
 class Brick {
-  constructor(ctx, x, y) {
+  constructor(ctx, x, y, lifes) {
+    this.colors = ["#fff", "#ccc", "#737373", "#000"];
     this.ctx = ctx;
     this.width = 80;
     this.height = 30;
-    this.color = "#ccc";
+    this.lifes = lifes;
+    this.color = this.colors[this.lifes];
     this.x = x;
     this.y = y;
-    this.lifes = 1;
   }
 
   draw() {
@@ -139,8 +147,6 @@ function checkCollisions(ball, paddle, bricks) {
     ball.y = paddle.y - ball.radius;
   }
   bricks.forEach(function(b, i) {
-    //console.log(b.x, b.y);
-    //console.log(ball.x, ball.y);
     let ballBottom = ball.y + ball.radius;
     let ballTop = ball.y - ball.radius;
     let brickBottom = b.y + b.height;
@@ -153,17 +159,17 @@ function checkCollisions(ball, paddle, bricks) {
       ball.x <= b.x + b.width
     ) {
       b.lifes--;
-      b.color = "#f00";
+      b.color = b.colors[b.lifes];
       ball.speedY = -ball.speedY;
     }
   });
 }
 
 let levels = [
-  [1, 1, 0, 0, 0, 0, 0, 0, 1, 1],
-  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [0, 0, 1, 1, 1, 1, 1, 1, 0, 0],
+  [1, 1, 1, 1, 2, 2, 1, 1, 1, 1],
   [1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
-  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
 ];
 
 function buildLevel(index) {
@@ -172,8 +178,8 @@ function buildLevel(index) {
   let y = 50;
   let x = 0;
   for (let i = 0; i < level.length; i++) {
-    if (level[i] === 1) {
-      let b = new Brick(ctx, x * 80, y);
+    if (level[i] > 0) {
+      let b = new Brick(ctx, x * 80, y, level[i]);
       bricks.push(b);
     }
     x = (x + 1) % 10;
@@ -210,6 +216,7 @@ function gameLoop(t) {
     currentLevel++;
     bricks = [];
     bricks = buildLevel(currentLevel);
+    ball.reset();
   }
   if (running) {
     requestAnimationFrame(gameLoop);
