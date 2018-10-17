@@ -4,8 +4,8 @@ export default class Ball {
     this.paddle = paddle;
     this.radius = 8;
     this.color = "#f00";
-    this.speedX = 2;
-    this.speedY = -3;
+    this.speedX = 3;
+    this.speedY = -2;
     this.x = 400;
     this.y = 300;
   }
@@ -23,8 +23,8 @@ export default class Ball {
   }
 
   reset() {
-    this.speedX = 2;
-    this.speedY = -3;
+    this.speedX = 3;
+    this.speedY = -2;
     this.x = 400;
     this.y = 300;
   }
