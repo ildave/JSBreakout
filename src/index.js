@@ -1,6 +1,7 @@
 import Paddle from "/src/paddle.js";
 import Ball from "/src/ball.js";
 import Brick from "/src/brick.js";
+import levels from "/src/levels.js"
 
 let canvas = document.getElementById("game");
 let ctx = canvas.getContext("2d");
@@ -77,12 +78,7 @@ function checkCollisions(ball, paddle, bricks) {
   });
 }
 
-let levels = [
-  [0, 0, 1, 1, 1, 1, 1, 1, 0, 0],
-  [1, 1, 1, 1, 2, 2, 1, 1, 1, 1],
-  [1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
-  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
-];
+
 
 function buildLevel(index) {
   let level = levels[index];
