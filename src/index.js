@@ -1,11 +1,10 @@
-import Paddle from "/src/paddle.js";
-import Ball from "/src/ball.js";
 import Brick from "/src/brick.js";
 import levels from "/src/levels.js"
+import Game from "src/game.js";
 
 let canvas = document.getElementById("game");
 let ctx = canvas.getContext("2d");
-
+/*
 document.addEventListener("keydown", function(e) {
   if (e.keyCode === 37) {
     paddle.moveLeft();
@@ -38,45 +37,6 @@ document.addEventListener("keyup", function(e) {
   }
 });
 
-function checkCollisions(ball, paddle, bricks) {
-  if (ball.x - ball.radius <= 0) {
-    ball.speedX = -ball.speedX;
-  }
-  if (ball.y - ball.radius <= 0) {
-    ball.speedY = -ball.speedY;
-  }
-  if (ball.x >= 800 - ball.radius) {
-    ball.speedX = -ball.speedX;
-  }
-  if (ball.y >= 600 - ball.radius) {
-    ball.speedY = -ball.speedY;
-  }
-  if (
-    ball.y + ball.radius > paddle.y &&
-    ball.x >= paddle.x - ball.radius &&
-    ball.x <= paddle.x + paddle.width
-  ) {
-    ball.speedY = -ball.speedY;
-    ball.y = paddle.y - ball.radius;
-  }
-  bricks.forEach(function(b, i) {
-    let ballBottom = ball.y + ball.radius;
-    let ballTop = ball.y - ball.radius;
-    let brickBottom = b.y + b.height;
-    let brickTop = b.y;
-
-    if (
-      ballBottom >= brickTop &&
-      ballTop <= brickBottom &&
-      ball.x >= b.x &&
-      ball.x <= b.x + b.width
-    ) {
-      b.lifes--;
-      b.color = b.colors[b.lifes];
-      ball.speedY = -ball.speedY;
-    }
-  });
-}
 
 
 
@@ -97,20 +57,32 @@ function buildLevel(index) {
   }
   return bricks;
 }
-
+*/
+/*
 let running = true;
 let currentLevel = 0;
 let paddle = new Paddle(ctx);
 let ball = new Ball(ctx, paddle);
 let bricks = [];
 bricks = buildLevel(currentLevel);
+*/
+let game = new Game(800, 600, ctx, levels);
+game.initInput();
 
-function gameLoop(t) {
+function gameLoop() {
   ctx.fillStyle = "#fff";
   ctx.fillRect(0, 0, 800, 600);
-  bricks = bricks.filter(function(b) {
-    return b.lifes > 0;
-  });
+  game.removeBricks();
+  game.update()
+  game.draw();
+  game.checkCollisions();
+  if (game.bricks.length === 0) {
+    game.currentLevel++;
+    game.bricks = [];
+    game.bricks = buildLevel();
+    game.ball.reset();
+  }
+  /*
   paddle.update();
   paddle.draw();
   ball.update();
@@ -126,7 +98,8 @@ function gameLoop(t) {
     bricks = buildLevel(currentLevel);
     ball.reset();
   }
-  if (running) {
+  */
+  if (game.running) {
     requestAnimationFrame(gameLoop);
   }
 }
