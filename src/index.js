@@ -100,9 +100,7 @@ document.addEventListener("keydown", function(e) {
   }
   if (e.keyCode === 68) {
     console.log("Ball", ball.x, ball.y);
-    bricks.forEach(function(b, i) {
-      console.log("Brick:", b.x, b.y, b.x + b.width, b.y + b.height);
-    });
+    console.log("Paddle", paddle.x, paddle.y);
   }
 });
 
@@ -133,11 +131,12 @@ function checkCollisions(ball, paddle, bricks) {
     ball.speedY = -ball.speedY;
   }
   if (
-    ball.y >= paddle.y - ball.radius &&
+    ball.y + ball.radius > paddle.y &&
     ball.x >= paddle.x - ball.radius &&
     ball.x <= paddle.x + paddle.width
   ) {
     ball.speedY = -ball.speedY;
+    ball.y = paddle.y - ball.radius;
   }
   bricks.forEach(function(b, i) {
     //console.log(b.x, b.y);
@@ -168,9 +167,7 @@ let levels = [
 ];
 
 function buildLevel(index) {
-  console.log("level", index);
   let level = levels[index];
-  console.log(level);
   let bricks = [];
   let y = 50;
   let x = 0;
@@ -193,37 +190,21 @@ let paddle = new Paddle(ctx);
 let ball = new Ball(ctx, paddle);
 let bricks = [];
 bricks = buildLevel(currentLevel);
-//let b = new Brick(ctx, 1 * 100, 50);
-//bricks.push(b);
-
-/*
-for (let i = 0; i < 8; i++) {
-  let b = new Brick(ctx, i * 100, 50);
-  bricks.push(b);
-}
-for (let i = 0; i < 8; i++) {
-  let b = new Brick(ctx, i * 100, 80);
-  bricks.push(b);
-}
-for (let i = 0; i < 8; i++) {
-  let b = new Brick(ctx, i * 100, 110);
-  bricks.push(b);
-}*/
 
 function gameLoop(t) {
   ctx.fillStyle = "#fff";
   ctx.fillRect(0, 0, 800, 600);
-  checkCollisions(ball, paddle, bricks);
   bricks = bricks.filter(function(b) {
     return b.lifes > 0;
   });
   paddle.update();
   paddle.draw();
-  ball.update(bricks);
+  ball.update();
   ball.draw();
   bricks.forEach(function(b, i) {
     b.draw();
   });
+  checkCollisions(ball, paddle, bricks);
 
   if (bricks.length === 0) {
     currentLevel++;
